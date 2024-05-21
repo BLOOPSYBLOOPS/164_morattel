@@ -9,7 +9,7 @@
 
     var settings = $.extend({
       'class': '',
-      'placeholder': 'Select Tags',
+      'placeholder': 'Selectionner des véhicules',
       'dropClass': '',
       'dropFooter': true,
       'isOpen': false,

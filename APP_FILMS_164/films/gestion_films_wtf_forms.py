@@ -34,8 +34,8 @@ class FormWTFUpdateFilm(FlaskForm):
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
 
-    nom_film_update_wtf = StringField("Clavioter le titre", widget=TextArea())
-    duree_film_update_wtf = IntegerField("Durée du film (minutes)", validators=[NumberRange(min=1, max=5000,
+    nom_film_update_wtf = StringField("Adresse du garage", widget=TextArea())
+    duree_film_update_wtf = IntegerField("Nombre de place totale", validators=[NumberRange(min=1, max=5000,
                                                                                             message=u"Min %(min)d et "
                                                                                                     u"max %(max)d "
                                                                                                     u"Selon Wikipédia "
@@ -49,7 +49,7 @@ class FormWTFUpdateFilm(FlaskForm):
     cover_link_film_update_wtf = StringField("Lien de l'affiche du film ", widget=TextArea())
     datesortie_film_update_wtf = DateField("Date de sortie du film", validators=[InputRequired("Date obligatoire"),
                                                                                  DataRequired("Date non valide")])
-    submit = SubmitField("Update film")
+    submit = SubmitField("Enregistrer garage")
 
 
 class FormWTFDeleteFilm(FlaskForm):
