@@ -93,7 +93,7 @@ def edit_genre_film_selected():
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                strsql_genres_afficher = """SELECT id_vehicule, modele_vehicule FROM t_vehicule ORDER BY id_vehicule ASC"""
+                strsql_genres_afficher = """SELECT * FROM t_vehicule ORDER BY id_vehicule ASC"""
                 mc_afficher.execute(strsql_genres_afficher)
             data_genres_all = mc_afficher.fetchall()
             print("dans edit_genre_film_selected ---> data_genres_all", data_genres_all)
@@ -139,7 +139,7 @@ def edit_genre_film_selected():
             print("lst_data_genres_films_old_attribues  ", lst_data_genres_films_old_attribues,
                   type(lst_data_genres_films_old_attribues))
 
-            print(" data data_genre_film_selected", data_genre_film_selected, "type ", type(data_genre_film_selected))
+            print(" datassssssssssss data_genre_film_selected", data_genre_film_selected, "type ", type(data_genre_film_selected))
             print(" data data_genres_films_non_attribues ", data_genres_films_non_attribues, "type ",
                   type(data_genres_films_non_attribues))
             print(" data_genres_films_attribues ", data_genres_films_attribues, "type ",
@@ -277,8 +277,8 @@ def genres_films_afficher_data(valeur_id_film_selected_dict):
     try:
 
         strsql_film_selected = """SELECT id_garage, adresse_garage, nbr_place_total, GROUP_CONCAT(id_vehicule) as VehiculeGarage FROM t_vehicule_garage
-                                        INNER JOIN t_garage ON t_garage.id_garage = t_vehicule_garage.fk_garage
-                                        INNER JOIN t_vehicule ON t_vehicule.id_vehicule = t_vehicule_garage.fk_vehicule
+                                        RIGHT JOIN t_garage ON t_garage.id_garage = t_vehicule_garage.fk_garage
+                                        LEFT JOIN t_vehicule ON t_vehicule.id_vehicule = t_vehicule_garage.fk_vehicule
                                         WHERE id_garage = %(value_id_film_selected)s"""
 
         strsql_genres_films_non_attribues = """SELECT id_vehicule, modele_vehicule FROM t_vehicule WHERE id_vehicule not in(SELECT id_vehicule as idVehiculeGarage FROM t_vehicule_garage
