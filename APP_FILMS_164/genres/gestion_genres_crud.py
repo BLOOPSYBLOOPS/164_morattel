@@ -17,7 +17,7 @@ from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteGenre
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
 
 """
-    Auteur : OM 2021.03.16
+    Auteur : BM 2021.03.16
     Définition d'une "route" /genres_afficher
     
     Test : ex : http://127.0.0.1:5575/genres_afficher
