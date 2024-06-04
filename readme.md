@@ -51,7 +51,7 @@ Installez PyCharm en suivant les instructions.
 Vous avez désormais accès au site et pouvez gérer une société de location de véhicule
 
 **Onglet véhicule:** Affiche les véhicules appartenant à votre société qui pourront être loué,
-vous pouvez en ajoutez autant que vous vouslez et vous pouvez désigner leur plaque d'immatriculation..
+vous pouvez en ajoutez autant que vous vouslez et vous pouvez désigner leur plaque d'immatriculation.
 
 **Onglet Garages:** Affiche les garages de votre société avec leur adresses et leur nombre de places totals
 Vous pouvez ajouter les voitures qui sont entreposée dedans.
