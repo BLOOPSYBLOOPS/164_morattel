@@ -16,7 +16,9 @@
 						<th class="" >
 						  Nombre de places totales
 						</th>
-
+                        <th class="text-center" class="align-middle">
+							<a class="btn btn-primary" style="width:115px; height: 65px; align-content: center; font-size: larger" href="{{ url_for('film_add_wtf') }}" role="button">Ajouter</a>
+						</th>
 					</tr>
 				</thead>
 			{% endif %}
@@ -33,9 +35,7 @@
 						{{ row.nbr_place_total }}
 					  </th>
 
-					  <th class="align-middle">
-						<a class="btn btn-primary" href="{{ url_for('film_add_wtf') }}" role="button">Ajouter</a>
-					  </th>
+
 					  <th class="align-middle">
 						<a class="btn btn-warning" href="{{ url_for('film_update_wtf', id_film_btn_edit_html=row.id_garage) }}" role="button">Edit</a>
 					  </th>

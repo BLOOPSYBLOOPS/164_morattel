@@ -103,10 +103,12 @@ def genres_ajouter_wtf():
             if form.validate_on_submit():
                 name_genre_wtf = form.nom_genre_wtf.data
                 name_genre = name_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_modele_vehicule": name_genre}
+                imatriculation_wtf = form.date_genre_wtf_essai.data
+                imatriculation = imatriculation_wtf.lower()
+                valeurs_insertion_dictionnaire = {"value_imatriculation": imatriculation, "value_modele_vehicule": name_genre}
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_genre = """INSERT INTO t_vehicule (id_vehicule,modele_vehicule) VALUES (NULL,%(value_modele_vehicule)s) """
+                strsql_insert_genre = """INSERT INTO t_vehicule (id_vehicule,modele_vehicule,imatriculation) VALUES (NULL,%(value_modele_vehicule)s,%(value_imatriculation)s) """
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
 
@@ -239,7 +241,7 @@ def genre_delete_wtf():
                 data_films_attribue_genre_delete = session['data_films_attribue_genre_delete']
                 print("data_films_attribue_genre_delete ", data_films_attribue_genre_delete)
 
-                flash(f"Effacer le genre de façon définitive de la BD !!!", "danger")
+                flash(f"Effacer le véhicule de façon définitive de la BD !!!", "danger")
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
@@ -273,9 +275,9 @@ def genre_delete_wtf():
             print(id_genre_delete, type(id_genre_delete))
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT id_vehicule, id_vehicule, modele_vehicule FROM t_vehicule
-                                            INNER JOIN t_personne ON t_vehicule.fk_personne = t_personne.id_personne
-                                            INNER JOIN t_vehicule ON t_personne.fk_vehicule = t_vehicule.id_vehicule
+            str_sql_genres_films_delete = """SELECT id_vehicule_garage, adresse_garage, id_vehicule, modele_vehicule FROM t_vehicule_garage 
+                                            INNER JOIN t_garage ON t_vehicule_garage.fk_garage = t_garage.id_garage
+                                            INNER JOIN t_vehicule ON t_vehicule_garage.fk_vehicule = t_vehicule.id_vehicule
                                             WHERE fk_vehicule = %(value_id_genre)s"""
 
             with DBconnection() as mydb_conn:
@@ -288,7 +290,7 @@ def genre_delete_wtf():
                 session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
                 # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-                str_sql_id_genre = "SELECT * FROM t_vehicule ORDER BY id_vehicule ASC"
+                str_sql_id_genre = "SELECT id_vehicule, modele_vehicule FROM `morattel_bryan_expi1a_mpd`.`t_vehicule` WHERE id_vehicule = %(value_id_genre)s"
 
                 mydb_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
                 # Une seule valeur est suffisante "fetchone()",

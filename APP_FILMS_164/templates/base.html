@@ -50,19 +50,13 @@
 						<!--		Afficher la liste des genres dans l'ordre (ASC) et tous les genres (0)-->
 						<a class="nav-link" href="{{ url_for('genres_afficher', order_by='ASC', id_genre_sel=0) }}">Véhicules</a>
 					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navdropdownfilms" role="button"
-						   data-bs-toggle="dropdown" aria-expanded="false">
-							Garages
-						</a>
-						<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-							<li><a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">Garages: 1</a>
-							</li>
-							<li><a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">Garages: 2</a></li>
-						</ul>
+                    <li class="nav-item">
+						<!--		Afficher la liste des genres dans l'ordre (ASC) et tous les genres (0)-->
+						<a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">Garages</a>
 					</li>
 
-						<a class="nav-link" href="{{ url_for('route_hommage_a_u_x_V_ictim_es_du_monstre_du_mod_1_6_4') }}">Compte Client</a>
+
+						<a class="nav-link" href="{{ url_for('personne_afficher',order_by='ASC',id_genre_sel=0) }}">Compte Client</a>
 					</li>
 						<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
 							<li><a class="dropdown-item" href="{{ url_for('index') }}">Démo index (sans template)</a></li>

@@ -21,9 +21,9 @@ def mapageprincipale():
     return render_template("home.html")
 
 
-@app.route('/essai')
-def route_hommage_a_u_x_V_ictim_es_du_monstre_du_mod_1_6_4():
-    return render_template("essai/template_pour_route_essai.html")
+@app.route('/personne')
+def personne():
+    return render_template("personne/personne_afficher.html")
 
 
 """
