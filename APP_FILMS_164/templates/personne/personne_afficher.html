@@ -9,8 +9,24 @@
 			</h3>
 			<main class="site-content">
 				<p>
-					Voici les comptes des clients inscrits
+					Voici les personnes inscrites et à quel comptes ils sont assignées
 				</p>
+            {% if data_type_compte %}
+                    <select id="essai_dropdown" name="id_type_sel" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" onchange="update(this.value)">
+                        <option value="0" {% if id_type_sel == 0 %} selected {% endif %}>tous</option>
+                        {% for row in data_type_compte %}
+                            <option value="{{ row.id_type_compte }}" {% if id_type_sel == row.id_type_compte %} selected {% endif %}>{{ row.nom_type_compte }}</option>
+                        {% endfor %}
+                        <option value="99999" {% if id_type_sel == 99999 %} selected {% endif %}>pas de compte</option>
+                    </select>
+                <script>
+                    function update(id_type_sel){
+                        var url = "{{ url_for('personne_afficher', order_by='ASC', id_type_sel=-1) }}";
+                        url = url.replace(-1, id_type_sel);
+                        window.location.href = url;
+                    }
+                </script>
+            {% endif %}
 				<table class="table table-bordered table-sm">
             {% if data %}
                 <thead>
@@ -30,6 +46,14 @@
                         <th class="align-middle">
                             Téléphone
                         </th>
+                        {% if id_type_sel != 99999 %}
+                            <th class="align-middle">
+                                pseudo
+                            </th>
+                            <th class="align-middle">
+                                type de compte
+                            </th>
+                        {% endif %}
                         <th class="text-center" class="align-middle">
 							<a class="btn btn-primary" style="width:115px; height: 65px; align-content: center; font-size: larger" href="{{ url_for('personne_ajouter_wtf') }}" role="button">Ajouter</a>
 						</th>
@@ -55,6 +79,14 @@
                         <td class="align-middle">
 							{{ row.telephone }}
 						</td>
+                        {% if id_type_sel != 99999 %}
+                            <td class="align-middle">
+							    {{ row.pseudo_compte }}
+						    </td>
+                            <td class="align-middle">
+							    {{ row.nom_type_compte }}
+						    </td>
+                        {% endif %}
 						<td class="text-center" class="align-middle">
 							<a class="btn btn-warning" href="{{ url_for('personne_update_wtf', id_personne = row.id_personne) }}" role="button">Modifier</a>
 						</td>

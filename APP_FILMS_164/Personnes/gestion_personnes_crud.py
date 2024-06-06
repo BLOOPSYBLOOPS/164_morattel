@@ -28,43 +28,59 @@ from APP_FILMS_164.Personnes.gestion_personnes_wtf_forms import FormWTFUpdatePer
 """
 
 
-@app.route("/personne_afficher/<string:order_by>/<int:id_genre_sel>", methods=['GET', 'POST'])
-def personne_afficher(order_by, id_genre_sel):
+@app.route("/personne_afficher/<string:order_by>/<int:id_type_sel>", methods=['GET', 'POST'])
+def personne_afficher(order_by, id_type_sel):
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                if order_by == "ASC" and id_genre_sel == 0:
-                    strsql_genres_afficher = """SELECT * FROM t_personne ORDER BY id_personne ASC"""
+                if order_by == "ASC" and id_type_sel > 0 and id_type_sel < 99999:
+                    valeurs_insertion_dictionnaire = {"id_type_sel": id_type_sel}
+                    strsql_genres_afficher = """SELECT id_personne,nom,prenom,mail,telephone,pseudo_compte,nom_type_compte FROM t_compte_personne 
+                                                INNER JOIN t_compte  ON t_compte.id_compte = t_compte_personne.fk_compte
+                                                INNER JOIN t_personne ON t_personne.id_personne = t_compte_personne.fk_personne
+                                                INNER JOIN t_compte_type_compte  ON t_compte.id_compte = t_compte_type_compte.fk_compte
+                                                INNER JOIN t_type_compte ON t_type_compte.id_type_compte = t_compte_type_compte.fk_type_compte
+                                                WHERE id_type_compte = %(id_type_sel)s
+                                                ORDER BY id_personne ASC"""
+                    mc_afficher.execute(strsql_genres_afficher, valeurs_insertion_dictionnaire)
+                elif order_by == "ASC" and id_type_sel == 0 :
+                    strsql_genres_afficher = """SELECT id_personne,nom,prenom,mail,telephone,pseudo_compte,nom_type_compte FROM t_personne
+                                                LEFT JOIN t_compte_personne ON t_compte_personne.fk_personne = t_personne.id_personne 
+                                                LEFT JOIN t_compte  ON t_compte.id_compte = t_compte_personne.fk_compte
+                                                LEFT JOIN t_compte_type_compte  ON t_compte.id_compte = t_compte_type_compte.fk_compte
+                                                LEFT JOIN t_type_compte ON t_type_compte.id_type_compte = t_compte_type_compte.fk_type_compte
+                                                ORDER BY id_personne ASC"""
                     mc_afficher.execute(strsql_genres_afficher)
-                elif order_by == "ASC":
-                    # C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
-                    # la commande MySql classique est "SELECT * FROM t_genre"
-                    # Pour "lever"(raise) une erreur s'il y a des erreurs sur les noms d'attributs dans la table
-                    # donc, je précise les champs à afficher
-                    # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
-                    valeur_id_genre_selected_dictionnaire = {"value_id_genre_selected": id_genre_sel}
-                    strsql_genres_afficher = """SELECT * FROM t_personne"""
-
-                    mc_afficher.execute(strsql_genres_afficher, valeur_id_genre_selected_dictionnaire)
+                elif order_by == "ASC" and id_type_sel == 99999 :
+                    strsql_genres_afficher = """SELECT id_personne,nom,prenom,mail,telephone FROM t_personne
+                                                LEFT JOIN t_compte_personne ON t_compte_personne.fk_personne = t_personne.id_personne
+                                                WHERE t_compte_personne.fk_personne IS NULL
+                                                ORDER BY id_personne ASC"""
+                    mc_afficher.execute(strsql_genres_afficher)
                 else:
-                    strsql_genres_afficher = """SELECT * FROM t_personne"""
+                    strsql_genres_afficher = """SELECT id_personne,nom,prenom,mail,telephone,pseudo_compte,nom_type_compte FROM t_personne
+                                                LEFT JOIN t_compte_personne ON t_compte_personne.fk_personne = t_personne.id_personne 
+                                                LEFT JOIN t_compte  ON t_compte.id_compte = t_compte_personne.fk_compte
+                                                LEFT JOIN t_compte_type_compte  ON t_compte.id_compte = t_compte_type_compte.fk_compte
+                                                LEFT JOIN t_type_compte ON t_type_compte.id_type_compte = t_compte_type_compte.fk_type_compte
+                                                ORDER BY id_personne DESC"""
 
                     mc_afficher.execute(strsql_genres_afficher)
 
                 data_genres = mc_afficher.fetchall()
+                strSql_type_afficher = """SELECT * FROM t_type_compte"""
+                mc_afficher.execute(strSql_type_afficher)
+                data_type_compte = mc_afficher.fetchall()
 
                 print("data_genres ", data_genres, " Type : ", type(data_genres))
 
                 # Différencier les messages si la table est vide.
-                if not data_genres and id_genre_sel == 0:
-                    flash("""La table "t_genre" est vide. !!""", "warning")
-                elif not data_genres and id_genre_sel > 0:
-                    # Si l'utilisateur change l'id_genre dans l'URL et que le genre n'existe pas,
-                    flash(f"Le genre demandé n'existe pas !!", "warning")
+                if not data_genres :
+                    flash("""aucun utilisateurs!!""", "warning")
                 else:
                     # Dans tous les autres cas, c'est que la table "t_genre" est vide.
                     # OM 2020.04.09 La ligne ci-dessous permet de donner un sentiment rassurant aux utilisateurs.
-                    flash(f"véhicule affichés !!!", "success")
+                    flash(f"Personnes affichés !!!", "success")
 
         except Exception as Exception_genres_afficher:
             raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
@@ -72,7 +88,7 @@ def personne_afficher(order_by, id_genre_sel):
                                           f"{Exception_genres_afficher}")
 
     # Envoie la page "HTML" au serveur.
-    return render_template("personne/personne_afficher.html", data=data_genres)
+    return render_template("personne/personne_afficher.html", data=data_genres, data_type_compte=data_type_compte, id_type_sel=id_type_sel)
 
 
 """
@@ -122,7 +138,7 @@ def personne_ajouter_wtf():
                 print(f"Données insérées !!")
 
                 # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('personne_afficher', order_by='DESC', id_genre_sel=0))
+                return redirect(url_for('personne_afficher', order_by='DESC', id_type_sel=-1))
 
         except Exception as Exception_genres_ajouter_wtf:
             raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
@@ -188,7 +204,7 @@ def personne_update_wtf():
 
             # afficher et constater que la donnée est mise à jour.
             # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('personne_afficher', order_by="ASC", id_genre_sel=id_personne_update))
+            return redirect(url_for('personne_afficher', order_by="ASC", id_type_sel=-1))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
             str_sql_id_genre = "SELECT id_personne, nom, prenom, mail, telephone FROM t_personne " \
@@ -244,7 +260,7 @@ def personne_delete_wtf():
         if request.method == "POST" and form_delete.validate_on_submit():
 
             if form_delete.submit_btn_annuler.data:
-                return redirect(url_for("personne_afficher", order_by="ASC", id_genre_sel=0))
+                return redirect(url_for("personne_afficher", order_by="ASC", id_type_sel=-1))
 
             if form_delete.submit_btn_conf_del.data:
                 # Récupère les données afin d'afficher à nouveau
@@ -277,7 +293,7 @@ def personne_delete_wtf():
                 print(f"personne définitivement effacé !!")
 
                 # afficher les données
-                return redirect(url_for('personne_afficher', order_by="ASC", id_genre_sel=0))
+                return redirect(url_for('personne_afficher', order_by="ASC", id_type_sel=-1))
 
         if request.method == "GET":
             valeur_select_dictionnaire = {"id_personne": id_personne_delete}
